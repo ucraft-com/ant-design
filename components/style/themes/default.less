@@ -65,10 +65,6 @@
 @font-size-base: 14px;
 @font-size-lg: @font-size-base + 2px;
 @font-size-sm: 12px;
-@heading-1-size: ceil(@font-size-base * 2.71);
-@heading-2-size: ceil(@font-size-base * 2.14);
-@heading-3-size: ceil(@font-size-base * 1.71);
-@heading-4-size: ceil(@font-size-base * 1.42);
 // https://github.com/ant-design/ant-design/issues/20210
 @line-height-base: 1.5715;
 @border-radius-base: 2px;
@@ -813,7 +809,7 @@
 @page-header-content-padding-vertical: @padding-sm;
 @page-header-back-color: #000;
 @page-header-ghost-bg: inherit;
-@page-header-heading-title: @heading-4-size;
+@page-header-heading-title: var(--h4-font-size);
 @page-header-heading-sub-title: 14px;
 @page-header-tabs-tab-font-size: 16px;
 
@@ -967,7 +963,6 @@
 
 // Typography
 // ---
-@typography-title-font-weight: 600;
 @typography-title-margin-top: 1.2em;
 @typography-title-margin-bottom: 0.5em;
 
