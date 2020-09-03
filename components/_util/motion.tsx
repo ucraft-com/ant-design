@@ -1,11 +1,10 @@
 import { CSSMotionProps } from 'rc-motion';
-import { MotionEventHandler, MotionEndEventHandler } from 'rc-motion/lib/CSSMotion';
 
 // ================== Collapse Motion ==================
-const getCollapsedHeight: MotionEventHandler = () => ({ height: 0, opacity: 0 });
-const getRealHeight: MotionEventHandler = node => ({ height: node.scrollHeight, opacity: 1 });
-const getCurrentHeight: MotionEventHandler = node => ({ height: node.offsetHeight });
-const skipOpacityTransition: MotionEndEventHandler = (_, event) =>
+const getCollapsedHeight: any = () => ({ height: 0, opacity: 0 });
+const getRealHeight: any = (node: any) => ({ height: node.scrollHeight, opacity: 1 });
+const getCurrentHeight: any = (node: any) => ({ height: node.offsetHeight });
+const skipOpacityTransition: any = (_: any, event: any) =>
   (event as TransitionEvent).propertyName === 'height';
 
 const collapseMotion: CSSMotionProps = {
