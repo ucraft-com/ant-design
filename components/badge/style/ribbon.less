@@ -15,10 +15,10 @@
   top: 8px;
   height: 22px;
   padding: 0 8px;
-  color: @badge-text-color;
+  color: var(--badge-text-color);
   line-height: 22px;
   white-space: nowrap;
-  background-color: @primary-color;
+  background-color: var(--primary-color);
   border-radius: @border-radius-sm;
 
   &-corner {
@@ -26,7 +26,7 @@
     top: 100%;
     width: 8px;
     height: 8px;
-    color: @primary-color;
+    color: var(--primary-color);
     border: 4px solid;
     transform: scaleY(0.75);
     transform-origin: top;
@@ -48,11 +48,11 @@
   .make-color-classes(@i: length(@preset-colors)) when (@i > 0) {
     .make-color-classes(@i - 1);
     @color: extract(@preset-colors, @i);
-    @darkColor: '@{color}-6';
+    @darkColor: ~'var(--@{color}-6)';
     &-color-@{color} {
-      background-color: @@darkColor;
+      background-color: @darkColor;
       .@{ribbon-prefix-cls}-corner {
-        color: @@darkColor;
+        color: @darkColor;
       }
     }
   }

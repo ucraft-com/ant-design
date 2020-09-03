@@ -416,8 +416,8 @@
     line-height: ceil((@font-size-sm * 1.4 - @border-width-base * 3) / 2) * 2 + @border-width-base *
       3;
     // vertical-align: floor((@font-size-base - ceil(@font-size-sm * 1.4)) / 2);
-    background: @table-expand-icon-bg;
-    border: @border-width-base @border-style-base @border-color-split;
+    background: var(--table-expand-icon-bg);
+    border: @border-width-base @border-style-base var(--border-color-split);
     border-radius: @border-radius-base;
     outline: none;
     transition: all 0.3s;
@@ -607,8 +607,8 @@
       z-index: @table-sticky-zindex;
       display: flex;
       align-items: center;
-      background: lighten(@border-color-split, 80%);
-      border-top: 1px solid @border-color-split;
+      background: var(--table-sticky-scroll-bg);
+      border-top: 1px solid var(--border-color-split);
       opacity: 0.6;
       &:hover {
         transform-origin: center bottom;
