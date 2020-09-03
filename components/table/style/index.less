@@ -5,6 +5,9 @@
 
 @table-prefix-cls: ~'@{ant-prefix}-table';
 @dropdown-prefix-cls: ~'@{ant-prefix}-dropdown';
+@descriptions-prefix-cls: ~'@{ant-prefix}-descriptions';
+@table-sticky-zindex: @zindex-table-fixed + 1;
+@table-sticky-scroll-bar-active-bg: fade(@table-sticky-scroll-bar-bg, 80%);
 
 .@{table-prefix-cls}-wrapper {
   max-width: 100%;
@@ -126,10 +129,6 @@
         .@{table-prefix-cls} {
           margin: -@table-padding-vertical -@table-padding-horizontal -@table-padding-vertical (@table-padding-horizontal +
                 ceil(@font-size-sm * 1.4));
-
-          td {
-            background: transparent;
-          }
 
           &-tbody > tr:last-child > td {
             border-bottom: 0;
@@ -315,7 +314,7 @@
     .@{dropdown-prefix-cls}-menu {
       // https://github.com/ant-design/ant-design/issues/4916
       // https://github.com/ant-design/ant-design/issues/19542
-      max-height: calc(100vh - 130px);
+      max-height: 264px;
       overflow-x: hidden;
       border: 0;
       box-shadow: none;
@@ -410,14 +409,15 @@
     float: left;
     box-sizing: border-box;
 
-    width: ceil(@font-size-sm * 1.4);
-    height: ceil(@font-size-sm * 1.4);
+    width: ceil((@font-size-sm * 1.4 - @border-width-base * 3) / 2) * 2 + @border-width-base * 3;
+    height: ceil((@font-size-sm * 1.4 - @border-width-base * 3) / 2) * 2 + @border-width-base * 3;
     padding: 0;
     color: inherit;
-    line-height: @font-size-sm;
-    vertical-align: floor((@font-size-base - ceil(@font-size-sm * 1.4)) / 2);
-    background: var(--table-expand-icon-bg);
-    border: @border-width-base @border-style-base var(--border-color-split);
+    line-height: ceil((@font-size-sm * 1.4 - @border-width-base * 3) / 2) * 2 + @border-width-base *
+      3;
+    // vertical-align: floor((@font-size-base - ceil(@font-size-sm * 1.4)) / 2);
+    background: @table-expand-icon-bg;
+    border: @border-width-base @border-style-base @border-color-split;
     border-radius: @border-radius-base;
     outline: none;
     transition: all 0.3s;
@@ -438,7 +438,7 @@
     }
 
     &::before {
-      top: 7px;
+      top: ceil((@font-size-sm * 1.4 - @border-width-base * 3) / 2);
       right: 3px;
       left: 3px;
       height: @border-width-base;
@@ -447,7 +447,7 @@
     &::after {
       top: 3px;
       bottom: 3px;
-      left: 7px;
+      left: ceil((@font-size-sm * 1.4 - @border-width-base * 3) / 2);
       width: @border-width-base;
       transform: rotate(90deg);
     }
@@ -468,10 +468,12 @@
       }
       background: transparent;
       border: 0;
+      visibility: hidden;
     }
 
     .@{table-prefix-cls}-row-indent + & {
-      margin-top: (@font-size-base * @line-height-base - ceil(@font-size-sm * 1.4)) / 2;
+      margin-top: (@font-size-base * @line-height-base - @border-width-base * 3) / 2 -
+        ceil((@font-size-sm * 1.4 - @border-width-base * 3) / 2);
       margin-right: @padding-xs;
     }
   }
@@ -482,6 +484,11 @@
       > td {
         background: var(--table-expanded-row-bg);
       }
+    }
+
+    // https://github.com/ant-design/ant-design/issues/25573
+    .@{descriptions-prefix-cls}-view table {
+      width: auto;
     }
   }
 
@@ -510,7 +517,7 @@
   &-cell-fix-right {
     position: -webkit-sticky !important;
     position: sticky !important;
-    z-index: 2;
+    z-index: @zindex-table-fixed;
     background: var(--table-bg);
   }
 
@@ -587,6 +594,36 @@
     .@{table-prefix-cls}-cell-fix-right-first::after,
     .@{table-prefix-cls}-cell-fix-right-last::after {
       box-shadow: inset -10px 0 8px -8px var(--table-shadow-color);
+    }
+  }
+  &-sticky {
+    &-header {
+      position: sticky;
+      z-index: @table-sticky-zindex;
+    }
+    &-scroll {
+      position: fixed;
+      bottom: 0;
+      z-index: @table-sticky-zindex;
+      display: flex;
+      align-items: center;
+      background: lighten(@border-color-split, 80%);
+      border-top: 1px solid @border-color-split;
+      opacity: 0.6;
+      &:hover {
+        transform-origin: center bottom;
+      }
+      &-bar {
+        height: 8px;
+        background-color: @table-sticky-scroll-bar-bg;
+        border-radius: @table-sticky-scroll-bar-radius;
+        &:hover {
+          background-color: @table-sticky-scroll-bar-active-bg;
+        }
+        &-active {
+          background-color: @table-sticky-scroll-bar-active-bg;
+        }
+      }
     }
   }
 }

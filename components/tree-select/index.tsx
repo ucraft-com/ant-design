@@ -46,7 +46,7 @@ class TreeSelect<T> extends React.Component<TreeSelectProps<T>, {}> {
 
   static defaultProps = {
     transitionName: 'slide-up',
-    choiceTransitionName: 'zoom',
+    choiceTransitionName: '',
     bordered: true,
   };
 
@@ -117,6 +117,7 @@ class TreeSelect<T> extends React.Component<TreeSelectProps<T>, {}> {
     const { suffixIcon, itemIcon, removeIcon, clearIcon } = getIcons({
       ...this.props,
       multiple: isMultiple,
+      prefixCls,
     });
 
     // ===================== Empty =====================

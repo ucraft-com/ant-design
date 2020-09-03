@@ -4,7 +4,7 @@
 @menu-prefix-cls: ~'@{ant-prefix}-menu';
 
 .@{menu-prefix-cls} {
-  &-rtl {
+  &&-rtl {
     direction: rtl;
     text-align: right;
   }
@@ -50,7 +50,7 @@
     .@{iconfont-css-prefix} {
       .@{menu-prefix-cls}-rtl & {
         margin-right: auto;
-        margin-left: 10px;
+        margin-left: @menu-icon-margin-right;
       }
     }
 

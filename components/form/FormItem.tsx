@@ -3,7 +3,9 @@ import isEqual from 'lodash/isEqual';
 import classNames from 'classnames';
 import { Field, FormInstance } from 'rc-field-form';
 import { FieldProps } from 'rc-field-form/lib/Field';
+import FieldContext from 'rc-field-form/lib/FieldContext';
 import { Meta, NamePath } from 'rc-field-form/lib/interface';
+import { supportRef } from 'rc-util/lib/ref';
 import omit from 'omit.js';
 import Row from '../grid/row';
 import { ConfigContext } from '../config-provider';
@@ -12,8 +14,10 @@ import devWarning from '../_util/devWarning';
 import FormItemLabel, { FormItemLabelProps } from './FormItemLabel';
 import FormItemInput, { FormItemInputProps } from './FormItemInput';
 import { FormContext, FormItemContext } from './context';
-import { toArray, getFieldId, useFrameState } from './util';
+import { toArray, getFieldId } from './util';
 import { cloneElement, isValidElement } from '../_util/reactNode';
+import useFrameState from './hooks/useFrameState';
+import useItemRef from './hooks/useItemRef';
 
 const ValidateStatuses = tuple('success', 'warning', 'error', 'validating', '');
 export type ValidateStatus = typeof ValidateStatuses[number];
@@ -40,11 +44,13 @@ export interface FormItemProps extends FormItemLabelProps, FormItemInputProps, R
   noStyle?: boolean;
   style?: React.CSSProperties;
   className?: string;
-  children: ChildrenType;
+  children?: ChildrenType;
   id?: string;
   hasFeedback?: boolean;
   validateStatus?: ValidateStatus;
   required?: boolean;
+  hidden?: boolean;
+  initialValue?: any;
 
   /** Auto passed by List render props. User should not use this. */
   fieldKey?: React.Key | React.Key[];
@@ -75,16 +81,21 @@ function FormItem(props: FormItemProps): React.ReactElement {
     required,
     label,
     trigger = 'onChange',
-    validateTrigger = 'onChange',
+    validateTrigger,
+    hidden,
     ...restProps
   } = props;
   const destroyRef = React.useRef(false);
   const { getPrefixCls } = React.useContext(ConfigContext);
-  const formContext = React.useContext(FormContext);
+  const { name: formName, requiredMark } = React.useContext(FormContext);
   const { updateItemErrors } = React.useContext(FormItemContext);
   const [domErrorVisible, innerSetDomErrorVisible] = React.useState(!!help);
   const prevValidateStatusRef = React.useRef<ValidateStatus | undefined>(validateStatus);
   const [inlineErrors, setInlineErrors] = useFrameState<Record<string, string[]>>({});
+
+  const { validateTrigger: contextValidateTrigger } = React.useContext(FieldContext);
+  const mergedValidateTrigger =
+    validateTrigger !== undefined ? validateTrigger : contextValidateTrigger;
 
   function setDomErrorVisible(visible: boolean) {
     if (!destroyRef.current) {
@@ -92,7 +103,6 @@ function FormItem(props: FormItemProps): React.ReactElement {
     }
   }
 
-  const { name: formName } = formContext;
   const hasName = hasValidName(name);
 
   // Cache Field NamePath
@@ -113,13 +123,19 @@ function FormItem(props: FormItemProps): React.ReactElement {
   const updateChildItemErrors = noStyle
     ? updateItemErrors
     : (subName: string, subErrors: string[]) => {
-        if (!isEqual(inlineErrors[subName], subErrors)) {
-          setInlineErrors(prevInlineErrors => ({
-            ...prevInlineErrors,
-            [subName]: subErrors,
-          }));
-        }
+        setInlineErrors((prevInlineErrors = {}) => {
+          if (!isEqual(prevInlineErrors[subName], subErrors)) {
+            return {
+              ...prevInlineErrors,
+              [subName]: subErrors,
+            };
+          }
+          return prevInlineErrors;
+        });
       };
+
+  // ===================== Children Ref =====================
+  const getItemRef = useItemRef();
 
   function renderLayout(
     baseChildren: React.ReactNode,
@@ -127,33 +143,35 @@ function FormItem(props: FormItemProps): React.ReactElement {
     meta?: Meta,
     isRequired?: boolean,
   ): React.ReactNode {
-    if (noStyle) {
+    if (noStyle && !hidden) {
       return baseChildren;
     }
 
     // ======================== Errors ========================
+    // >>> collect sub errors
+    let subErrorList: string[] = [];
+    Object.keys(inlineErrors).forEach(subName => {
+      subErrorList = [...subErrorList, ...(inlineErrors[subName] || [])];
+    });
+
+    // >>> merged errors
     let mergedErrors: React.ReactNode[];
     if (help !== undefined && help !== null) {
       mergedErrors = toArray(help);
     } else {
       mergedErrors = meta ? meta.errors : [];
-      Object.keys(inlineErrors).forEach(subName => {
-        const subErrors = inlineErrors[subName] || [];
-        if (subErrors.length) {
-          mergedErrors = [...mergedErrors, ...subErrors];
-        }
-      });
+      mergedErrors = [...mergedErrors, ...subErrorList];
     }
 
     // ======================== Status ========================
     let mergedValidateStatus: ValidateStatus = '';
     if (validateStatus !== undefined) {
       mergedValidateStatus = validateStatus;
-    } else if (meta && meta.validating) {
+    } else if (meta?.validating) {
       mergedValidateStatus = 'validating';
-    } else if (!help && mergedErrors.length) {
+    } else if (meta?.errors?.length || subErrorList.length) {
       mergedValidateStatus = 'error';
-    } else if (meta && meta.touched) {
+    } else if (meta?.touched) {
       mergedValidateStatus = 'success';
     }
 
@@ -174,6 +192,7 @@ function FormItem(props: FormItemProps): React.ReactElement {
       [`${prefixCls}-item-has-error-leave`]:
         !help && domErrorVisible && prevValidateStatusRef.current === 'error',
       [`${prefixCls}-item-is-validating`]: mergedValidateStatus === 'validating',
+      [`${prefixCls}-item-hidden`]: hidden,
     };
 
     // ======================= Children =======================
@@ -197,6 +216,7 @@ function FormItem(props: FormItemProps): React.ReactElement {
           'labelAlign',
           'labelCol',
           'normalize',
+          'preserve',
           'required',
           'validateFirst',
           'validateStatus',
@@ -205,7 +225,13 @@ function FormItem(props: FormItemProps): React.ReactElement {
         ])}
       >
         {/* Label */}
-        <FormItemLabel htmlFor={fieldId} required={isRequired} {...props} prefixCls={prefixCls} />
+        <FormItemLabel
+          htmlFor={fieldId}
+          required={isRequired}
+          requiredMark={requiredMark}
+          {...props}
+          prefixCls={prefixCls}
+        />
         {/* Input Group */}
         <FormItemInput
           {...props}
@@ -243,7 +269,7 @@ function FormItem(props: FormItemProps): React.ReactElement {
       {...props}
       messageVariables={variables}
       trigger={trigger}
-      validateTrigger={validateTrigger}
+      validateTrigger={mergedValidateTrigger}
       onReset={() => {
         setDomErrorVisible(false);
       }}
@@ -258,7 +284,7 @@ function FormItem(props: FormItemProps): React.ReactElement {
           nameRef.current = [...mergedName];
           if (fieldKey) {
             const fieldKeys = Array.isArray(fieldKey) ? fieldKey : [fieldKey];
-            nameRef.current = [...mergedName.slice(-1), ...fieldKeys];
+            nameRef.current = [...mergedName.slice(0, -1), ...fieldKeys];
           }
           updateItemErrors(nameRef.current.join('__SPLIT__'), errors);
         }
@@ -283,18 +309,23 @@ function FormItem(props: FormItemProps): React.ReactElement {
         // ======================= Children =======================
         const mergedControl: typeof control = {
           ...control,
-          id: fieldId,
         };
 
         let childNode: React.ReactNode = null;
+
+        devWarning(
+          !(shouldUpdate && dependencies),
+          'Form.Item',
+          "`shouldUpdate` and `dependencies` shouldn't be used together. See https://ant.design/components/form/#dependencies.",
+        );
         if (Array.isArray(children) && hasName) {
           devWarning(false, 'Form.Item', '`children` is array of render props cannot have `name`.');
           childNode = children;
-        } else if (isRenderProps && (!shouldUpdate || hasName)) {
+        } else if (isRenderProps && (!(shouldUpdate || dependencies) || hasName)) {
           devWarning(
-            !!shouldUpdate,
+            !!(shouldUpdate || dependencies),
             'Form.Item',
-            '`children` of render props only work with `shouldUpdate`.',
+            '`children` of render props only work with `shouldUpdate` or `dependencies`.',
           );
           devWarning(
             !hasName,
@@ -315,9 +346,19 @@ function FormItem(props: FormItemProps): React.ReactElement {
           );
 
           const childProps = { ...children.props, ...mergedControl };
+          if (!childProps.id) {
+            childProps.id = fieldId;
+          }
+
+          if (supportRef(children)) {
+            childProps.ref = getItemRef(mergedName, children);
+          }
 
           // We should keep user origin event handler
-          const triggers = new Set<string>([...toArray(trigger), ...toArray(validateTrigger)]);
+          const triggers = new Set<string>([
+            ...toArray(trigger),
+            ...toArray(mergedValidateTrigger),
+          ]);
 
           triggers.forEach(eventName => {
             childProps[eventName] = (...args: any[]) => {
@@ -334,7 +375,7 @@ function FormItem(props: FormItemProps): React.ReactElement {
               {cloneElement(children, childProps)}
             </MemoInput>
           );
-        } else if (isRenderProps && shouldUpdate && !hasName) {
+        } else if (isRenderProps && (shouldUpdate || dependencies) && !hasName) {
           childNode = (children as RenderChildren)(context);
         } else {
           devWarning(

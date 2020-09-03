@@ -34,6 +34,7 @@ exports[`Calendar Calendar should support locale 1`] = `
         </span>
         <span
           class="ant-select-selection-item"
+          title="2018年"
         >
           2018年
         </span>
@@ -46,7 +47,7 @@ exports[`Calendar Calendar should support locale 1`] = `
       >
         <span
           aria-label="down"
-          class="anticon anticon-down"
+          class="anticon anticon-down ant-select-suffix"
           role="img"
         >
           <svg
@@ -93,6 +94,7 @@ exports[`Calendar Calendar should support locale 1`] = `
         </span>
         <span
           class="ant-select-selection-item"
+          title="10月"
         >
           10月
         </span>
@@ -105,7 +107,7 @@ exports[`Calendar Calendar should support locale 1`] = `
       >
         <span
           aria-label="down"
-          class="anticon anticon-down"
+          class="anticon anticon-down ant-select-suffix"
           role="img"
         >
           <svg
@@ -975,6 +977,7 @@ exports[`Calendar rtl render component should be rendered correctly in RTL direc
         </span>
         <span
           class="ant-select-selection-item"
+          title="2000"
         >
           2000
         </span>
@@ -987,7 +990,7 @@ exports[`Calendar rtl render component should be rendered correctly in RTL direc
       >
         <span
           aria-label="down"
-          class="anticon anticon-down"
+          class="anticon anticon-down ant-select-suffix"
           role="img"
         >
           <svg
@@ -1033,6 +1036,7 @@ exports[`Calendar rtl render component should be rendered correctly in RTL direc
         </span>
         <span
           class="ant-select-selection-item"
+          title="Sep"
         >
           Sep
         </span>
@@ -1045,7 +1049,7 @@ exports[`Calendar rtl render component should be rendered correctly in RTL direc
       >
         <span
           aria-label="down"
-          class="anticon anticon-down"
+          class="anticon anticon-down ant-select-suffix"
           role="img"
         >
           <svg

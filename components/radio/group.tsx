@@ -1,5 +1,6 @@
 import * as React from 'react';
 import classNames from 'classnames';
+import useMergedState from 'rc-util/lib/hooks/useMergedState';
 import Radio from './radio';
 import { RadioGroupProps, RadioChangeEvent, RadioGroupButtonStyle } from './interface';
 import { ConfigContext } from '../config-provider';
@@ -10,21 +11,9 @@ const RadioGroup: React.FC<RadioGroupProps> = props => {
   const { getPrefixCls, direction } = React.useContext(ConfigContext);
   const size = React.useContext(SizeContext);
 
-  let initValue;
-  if (props.value !== undefined) {
-    initValue = props.value;
-  } else if (props.defaultValue !== undefined) {
-    initValue = props.defaultValue;
-  }
-  const [value, setValue] = React.useState(initValue);
-  const [prevPropValue, setPrevPropValue] = React.useState(props.value);
-
-  React.useEffect(() => {
-    setPrevPropValue(props.value);
-    if (props.value !== undefined || prevPropValue !== props.value) {
-      setValue(props.value);
-    }
-  }, [props.value]);
+  const [value, setValue] = useMergedState(props.defaultValue, {
+    value: props.value,
+  });
 
   const onRadioChange = (ev: RadioChangeEvent) => {
     const lastValue = value;
@@ -43,6 +32,7 @@ const RadioGroup: React.FC<RadioGroupProps> = props => {
       prefixCls: customizePrefixCls,
       className = '',
       options,
+      optionType,
       buttonStyle,
       disabled,
       children,
@@ -57,13 +47,14 @@ const RadioGroup: React.FC<RadioGroupProps> = props => {
     let childrenToRender = children;
     // 如果存在 options, 优先使用
     if (options && options.length > 0) {
+      const optionsPrefixCls = optionType === 'button' ? `${prefixCls}-button` : prefixCls;
       childrenToRender = options.map(option => {
         if (typeof option === 'string') {
           // 此处类型自动推导为 string
           return (
             <Radio
               key={option}
-              prefixCls={prefixCls}
+              prefixCls={optionsPrefixCls}
               disabled={disabled}
               value={option}
               checked={value === option}
@@ -76,7 +67,7 @@ const RadioGroup: React.FC<RadioGroupProps> = props => {
         return (
           <Radio
             key={`radio-group-value-options-${option.value}`}
-            prefixCls={prefixCls}
+            prefixCls={optionsPrefixCls}
             disabled={option.disabled || disabled}
             value={option.value}
             checked={value === option.value}

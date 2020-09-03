@@ -29,11 +29,13 @@ describe('Calendar', () => {
 
   it('Calendar should be selectable', () => {
     const onSelect = jest.fn();
-    const wrapper = mount(<Calendar onSelect={onSelect} />);
+    const onChange = jest.fn();
+    const wrapper = mount(<Calendar onSelect={onSelect} onChange={onChange} />);
     wrapper.find('.ant-picker-cell').at(0).simulate('click');
     expect(onSelect).toHaveBeenCalledWith(expect.anything());
     const value = onSelect.mock.calls[0][0];
     expect(Moment.isMoment(value)).toBe(true);
+    expect(onChange).toHaveBeenCalled();
   });
 
   it('only Valid range should be selectable', () => {
@@ -96,6 +98,28 @@ describe('Calendar', () => {
     const { disabledDate } = wrapper.find('PickerPanel').props();
     expect(disabledDate(Moment('2018-06-02'))).toBe(true);
     expect(disabledDate(Moment('2018-04-02'))).toBe(false);
+  });
+
+  it('validRange should work with disabledDate function', () => {
+    const validRange = [Moment('2018-02-02'), Moment('2018-05-18')];
+    const wrapper = mount(
+      <Calendar validRange={validRange} disabledDate={data => data.isSame(Moment('2018-02-03'))} />,
+    );
+
+    const { disabledDate } = wrapper.find('PickerPanel').props();
+    expect(disabledDate(Moment('2018-02-01'))).toBe(true);
+    expect(disabledDate(Moment('2018-02-02'))).toBe(false);
+    expect(disabledDate(Moment('2018-02-03'))).toBe(true);
+    expect(disabledDate(Moment('2018-02-04'))).toBe(false);
+    expect(disabledDate(Moment('2018-06-01'))).toBe(true);
+  });
+
+  it('Calendar MonthSelect should display correct label', () => {
+    const validRange = [Moment('2018-02-02'), Moment('2019-06-1')];
+    const wrapper = mount(<Calendar validRange={validRange} defaultValue={Moment('2019-01-01')} />);
+    const { options } = wrapper.find('MonthSelect > Select').props();
+    expect(options.length).toBe(6);
+    expect(options[5]).toEqual({ label: 'Jun', value: 5 });
   });
 
   it('Calendar should change mode by prop', () => {

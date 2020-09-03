@@ -11,7 +11,7 @@ module.exports = {
     'app.header.menu.resource': '资源',
     'app.header.menu.more': '更多',
     'app.header.menu.mobile': '移动版',
-    'app.header.menu.pro.v4': 'Ant Design Pro v4',
+    'app.header.menu.pro.v4': 'Ant Design Pro',
     'app.header.menu.charts': 'Ant Design Charts',
     'app.header.menu.ecosystem': '生态',
     'app.header.lang': 'English',
@@ -140,5 +140,6 @@ module.exports = {
     'app.docs.components.icon.pic-searcher.result-tip': '为您匹配到以下图标：',
     'app.docs.components.icon.pic-searcher.th-icon': '图标',
     'app.docs.components.icon.pic-searcher.th-score': '匹配度',
+    'app.components.overview.search': '搜索组件',
   },
 };

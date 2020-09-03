@@ -146,9 +146,14 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   handleVersionChange = (url: string) => {
     const currentUrl = window.location.href;
     const currentPathname = window.location.pathname;
-    window.location.href = currentUrl
-      .replace(window.location.origin, url)
-      .replace(currentPathname, utils.getLocalizedPathname(currentPathname));
+    if (/overview/.test(currentPathname) && /0?[1-39][0-3]?x/.test(url)) {
+      window.location.href = currentUrl
+        .replace(window.location.origin, url)
+        .replace(/\/components\/overview/, `/docs${/0(9|10)x/.test(url) ? '' : '/react'}/introduce`)
+        .replace(/\/$/, '');
+      return;
+    }
+    window.location.href = currentUrl.replace(window.location.origin, url);
   };
 
   onLangChange = () => {

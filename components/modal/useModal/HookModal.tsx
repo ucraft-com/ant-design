@@ -21,13 +21,16 @@ interface ModalLocale {
   justOkText: string;
 }
 
-const HookModal: React.RefForwardingComponent<HookModalRef, HookModalProps> = (
+const HookModal: React.ForwardRefRenderFunction<HookModalRef, HookModalProps> = (
   { afterClose, config },
   ref,
 ) => {
   const [visible, setVisible] = React.useState(true);
   const [innerConfig, setInnerConfig] = React.useState(config);
-  const { direction } = React.useContext(ConfigContext);
+  const { direction, getPrefixCls } = React.useContext(ConfigContext);
+
+  const prefixCls = getPrefixCls('modal');
+  const rootPrefixCls = getPrefixCls();
 
   function close() {
     setVisible(false);
@@ -47,6 +50,8 @@ const HookModal: React.RefForwardingComponent<HookModalRef, HookModalProps> = (
     <LocaleReceiver componentName="Modal" defaultLocale={defaultLocale.Modal}>
       {(modalLocale: ModalLocale) => (
         <ConfirmDialog
+          prefixCls={prefixCls}
+          rootPrefixCls={rootPrefixCls}
           {...innerConfig}
           close={close}
           visible={visible}

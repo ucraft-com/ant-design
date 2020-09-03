@@ -12,14 +12,11 @@
 }
 
 .button-disabled(@color: var(--btn-disable-color); @background: var(--btn-disable-bg); @border: var(--btn-disable-border)) {
-  &-disabled,
-  &.disabled,
   &[disabled] {
     &,
     &:hover,
     &:focus,
-    &:active,
-    &.active {
+    &:active {
       .button-color(@color; @background; @border);
 
       text-shadow: none;
@@ -84,8 +81,7 @@
       );
     }
   }
-  &:active,
-  &.active {
+  &:active {
     & when (@border = transparent) {
       .button-color(@background-active; transparent; transparent);
     }
@@ -121,11 +117,10 @@
     position: relative;
     &:hover,
     &:focus,
-    &:active,
-    &.active {
+    &:active {
       z-index: 2;
     }
-    &:disabled {
+    &[disabled] {
       z-index: 0;
     }
   }
@@ -188,7 +183,6 @@
     outline: 0;
     box-shadow: none;
   }
-  &.disabled,
   &[disabled] {
     cursor: not-allowed;
     > * {
@@ -224,8 +218,7 @@
   );
   &:hover,
   &:focus,
-  &:active,
-  &.active {
+  &:active {
     text-decoration: none;
     background: var(--btn-default-bg);
   }
@@ -332,7 +325,7 @@
     transparent
   );
 }
-// link button style
+// text button style
 .btn-text() {
   .button-variant-other(
     var(--text-color);

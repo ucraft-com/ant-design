@@ -119,6 +119,7 @@
         display: block;
         margin: auto;
         color: var(--disabled-color);
+        font-family: Arial, Helvetica, sans-serif;
         letter-spacing: 2px;
         text-align: center;
         text-indent: 0.13em;
@@ -165,17 +166,19 @@
   &-next {
     outline: 0;
 
-    a {
+    button {
       color: var(--text-color);
+      cursor: pointer;
       user-select: none;
     }
 
-    &:hover a {
+    &:hover button {
       border-color: var(--primary-5);
     }
 
     .@{pagination-prefix-cls}-item-link {
       display: block;
+      width: 100%;
       height: 100%;
       font-size: 12px;
       text-align: center;
@@ -198,7 +201,6 @@
     &:hover,
     &:focus {
       cursor: not-allowed;
-      a,
       .@{pagination-prefix-cls}-item-link {
         color: var(--disabled-color);
         border-color: var(--border-color-base);
@@ -280,6 +282,13 @@
 
       &:hover {
         border-color: var(--primary-color);
+      }
+
+      &[disabled] {
+        color: @disabled-color;
+        background: @disabled-bg;
+        border-color: @border-color-base;
+        cursor: not-allowed;
       }
     }
   }
@@ -372,27 +381,25 @@
     }
 
     .@{pagination-prefix-cls}-item-link {
-      &,
-      &:hover,
-      &:focus {
-        color: var(--text-color-secondary);
-        background: var(--disabled-bg);
-        border-color: var(--border-color-base);
-        cursor: not-allowed;
+      color: var(--disabled-color);
+      background: var(--disabled-bg);
+      border-color: var(--border-color-base);
+      cursor: not-allowed;
+      .@{pagination-prefix-cls}-simple& {
+        background: transparent;
       }
     }
 
-    .@{pagination-prefix-cls}-jump-prev,
-    .@{pagination-prefix-cls}-jump-next {
-      &:focus,
-      &:hover {
-        .@{pagination-prefix-cls}-item-link-icon {
-          opacity: 0;
-        }
-        .@{pagination-prefix-cls}-item-ellipsis {
-          opacity: 1;
-        }
-      }
+    .@{pagination-prefix-cls}-item-link-icon {
+      opacity: 0;
+    }
+
+    .@{pagination-prefix-cls}-item-ellipsis {
+      opacity: 1;
+    }
+
+    .@{pagination-prefix-cls}-simple-pager {
+      color: var(--disabled-color);
     }
   }
 }
