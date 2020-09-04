@@ -50,7 +50,6 @@
   'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
   'Noto Color Emoji';
 @code-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-@text-color: fade(@black, 85%);
 @text-color-secondary: fade(@black, 45%);
 @text-color-inverse: @white;
 @icon-color: inherit;
@@ -174,7 +173,7 @@
 @btn-primary-color: #fff;
 @btn-primary-bg: @primary-color;
 
-@btn-default-color: @text-color;
+@btn-default-color: var(--text-color);
 @btn-default-bg: @component-background;
 @btn-default-border: @border-color-base;
 
@@ -220,7 +219,7 @@
 @btn-text-active-bg: fadein(@btn-text-hover-bg, 1%);
 
 // for compatible
-@btn-ghost-color: @text-color;
+@btn-ghost-color: var(--text-color);
 @btn-ghost-bg: transparent;
 @btn-ghost-border: @border-color-base;
 
@@ -257,7 +256,7 @@
 @descriptions-item-trailing-colon: true;
 @descriptions-item-label-colon-margin-right: 8px;
 @descriptions-item-label-colon-margin-left: 2px;
-@descriptions-extra-color: @text-color;
+@descriptions-extra-color: var(--text-color);
 
 // Divider
 @divider-text-padding: 1em;
@@ -340,7 +339,7 @@
 @layout-header-background: #001529;
 @layout-header-height: 64px;
 @layout-header-padding: 0 50px;
-@layout-header-color: @text-color;
+@layout-header-color: var(--text-color);
 @layout-footer-padding: 24px 50px;
 @layout-footer-background: @layout-body-background;
 @layout-sider-background: @layout-header-background;
@@ -353,7 +352,7 @@
 // Layout light theme
 @layout-sider-background-light: #fff;
 @layout-trigger-background-light: #fff;
-@layout-trigger-color-light: @text-color;
+@layout-trigger-color-light: var(--text-color);
 
 // z-index list, order by `z-index`
 @zindex-badge: auto;
@@ -428,7 +427,7 @@
 @input-padding-vertical-lg: ceil((@input-height-lg - @font-size-lg * @line-height-base) / 2 * 10) /
   10 - @border-width-base;
 @input-placeholder-color: hsv(0, 0, 75%);
-@input-color: @text-color;
+@input-color: var(--text-color);
 @input-icon-color: @input-color;
 @input-border-color: @border-color-base;
 @input-bg: @component-background;
@@ -455,7 +454,7 @@
 // Select
 // ---
 @select-border-color: @border-color-base;
-@select-item-selected-color: @text-color;
+@select-item-selected-color: var(--text-color);
 @select-item-selected-font-weight: 600;
 @select-dropdown-bg: @component-background;
 @select-item-selected-bg: @primary-1;
@@ -518,7 +517,7 @@
 // Popover body background color
 @popover-bg: @component-background;
 // Popover text color
-@popover-color: @text-color;
+@popover-color: var(--text-color);
 // Popover maximum width
 @popover-min-width: 177px;
 @popover-min-height: 32px;
@@ -562,7 +561,7 @@
 // --
 @progress-default-color: @processing-color;
 @progress-remaining-color: @background-color-base;
-@progress-text-color: @text-color;
+@progress-text-color: var(--text-color);
 @progress-radius: 100px;
 @progress-steps-item-bg: #f3f3f3;
 @progress-text-font-size: 1em;
@@ -575,7 +574,7 @@
 @menu-collapsed-width: 80px;
 @menu-bg: @component-background;
 @menu-popup-bg: @component-background;
-@menu-item-color: @text-color;
+@menu-item-color: var(--text-color);
 @menu-highlight-color: @primary-color;
 @menu-highlight-danger-color: @error-color;
 @menu-item-active-bg: @primary-1;
@@ -659,7 +658,7 @@
 // Tag
 // --
 @tag-default-bg: @background-color-light;
-@tag-default-color: @text-color;
+@tag-default-color: var(--text-color);
 @tag-font-size: @font-size-sm;
 @tag-line-height: 20px;
 
@@ -735,7 +734,7 @@
   0 5px 12px 4px rgba(0, 0, 0, 0.09);
 @card-radius: @border-radius-base;
 @card-head-tabs-margin-bottom: -17px;
-@card-head-extra-color: @text-color;
+@card-head-extra-color: var(--text-color);
 
 // Comment
 // ---
@@ -785,7 +784,7 @@
 // ---
 @back-top-color: #fff;
 @back-top-bg: @text-color-secondary;
-@back-top-hover-bg: @text-color;
+@back-top-hover-bg: var(--text-color);
 
 // Avatar
 // ---
@@ -849,7 +848,7 @@
 // Breadcrumb
 // ---
 @breadcrumb-base-color: @text-color-secondary;
-@breadcrumb-last-item-color: @text-color;
+@breadcrumb-last-item-color: var(--text-color);
 @breadcrumb-font-size: @font-size-base;
 @breadcrumb-icon-font-size: @font-size-base;
 @breadcrumb-link-color: @text-color-secondary;
@@ -942,7 +941,7 @@
 @alert-error-bg-color: ~`colorPalette('@{error-color}', 1) `;
 @alert-error-icon-color: @error-color;
 @alert-message-color: @heading-color;
-@alert-text-color: @text-color;
+@alert-text-color: var(--text-color);
 @alert-close-color: @text-color-secondary;
 @alert-close-hover-color: @icon-color-hover;
 @alert-no-icon-padding-vertical: @padding-xs;
@@ -1031,7 +1030,7 @@
 
 @steps-process-icon-color: @primary-color;
 @steps-process-title-color: @heading-color;
-@steps-process-description-color: @text-color;
+@steps-process-description-color: var(--text-color);
 @steps-process-tail-color: @border-color-split;
 
 @steps-wait-icon-color: @disabled-color;
@@ -1040,7 +1039,7 @@
 @steps-wait-tail-color: @steps-process-tail-color;
 
 @steps-finish-icon-color: @steps-process-icon-color;
-@steps-finish-title-color: @text-color;
+@steps-finish-title-color: var(--text-color);
 @steps-finish-description-color: @text-color-secondary;
 @steps-finish-tail-color: @primary-color;
 
