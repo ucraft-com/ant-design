@@ -8,7 +8,7 @@ import { getConfirmLocale } from './locale';
 import { ModalFuncProps, destroyFns } from './Modal';
 import ConfirmDialog from './ConfirmDialog';
 
-let defaultRootPrefixCls = 'ant';
+let defaultRootPrefixCls = 'uc';
 
 function getRootPrefixCls() {
   return defaultRootPrefixCls;
