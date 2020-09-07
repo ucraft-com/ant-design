@@ -142,6 +142,7 @@ function FormItem(props: FormItemProps): React.ReactElement {
     fieldId?: string,
     meta?: Meta,
     isRequired?: boolean,
+    maxLengthIndicator?: number,
   ): React.ReactNode {
     if (noStyle && !hidden) {
       return baseChildren;
@@ -231,6 +232,7 @@ function FormItem(props: FormItemProps): React.ReactElement {
           requiredMark={requiredMark}
           {...props}
           prefixCls={prefixCls}
+          maxLengthIndicator={maxLengthIndicator}
         />
         {/* Input Group */}
         <FormItemInput
@@ -275,8 +277,16 @@ function FormItem(props: FormItemProps): React.ReactElement {
       }}
     >
       {(control, meta, context) => {
-        const { errors } = meta;
+        let maxLengthIndicator = null;
+        // @ts-ignore
+        const maxRule = rules?.find(rule => rule.max);
 
+        if (maxRule) {
+          // @ts-ignore
+          maxLengthIndicator = Number(maxRule.max) - Number(control.value?.length || 0);
+        }
+
+        const { errors } = meta;
         const mergedName = toArray(name).length && meta ? meta.name : [];
         const fieldId = getFieldId(mergedName, formName);
 
@@ -386,7 +396,7 @@ function FormItem(props: FormItemProps): React.ReactElement {
           childNode = children;
         }
 
-        return renderLayout(childNode, fieldId, meta, isRequired);
+        return renderLayout(childNode, fieldId, meta, isRequired, maxLengthIndicator as number);
       }}
     </Field>
   );

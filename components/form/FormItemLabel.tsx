@@ -1,11 +1,13 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import Col, { ColProps } from '../grid/col';
+import Row from '../grid/row';
 import { FormLabelAlign } from './interface';
 import { FormContext, FormContextProps } from './context';
 import { RequiredMark } from './Form';
 import { useLocaleReceiver } from '../locale-provider/LocaleReceiver';
 import defaultLocale from '../locale/default';
+import Typography from '../typography';
 
 export interface FormItemLabelProps {
   colon?: boolean;
@@ -14,6 +16,7 @@ export interface FormItemLabelProps {
   labelAlign?: FormLabelAlign;
   labelCol?: ColProps;
   requiredMark?: RequiredMark;
+  maxLengthIndicator?: number;
 }
 
 const FormItemLabel: React.FC<FormItemLabelProps & { required?: boolean; prefixCls: string }> = ({
@@ -25,6 +28,7 @@ const FormItemLabel: React.FC<FormItemLabelProps & { required?: boolean; prefixC
   colon,
   required,
   requiredMark,
+  maxLengthIndicator,
 }) => {
   const [formLocale] = useLocaleReceiver('Form');
 
@@ -77,14 +81,28 @@ const FormItemLabel: React.FC<FormItemLabelProps & { required?: boolean; prefixC
         });
 
         return (
-          <Col {...mergedLabelCol} className={labelColClassName}>
-            <label
-              htmlFor={htmlFor}
-              className={labelClassName}
-              title={typeof label === 'string' ? label : ''}
-            >
-              {labelChildren}
-            </label>
+          <Col>
+            <Row justify="space-between">
+              <Col {...mergedLabelCol} className={labelColClassName}>
+                <label
+                  htmlFor={htmlFor}
+                  className={labelClassName}
+                  title={typeof label === 'string' ? label : ''}
+                >
+                  {labelChildren}
+                </label>
+              </Col>
+              {typeof maxLengthIndicator === 'number' && (
+                <Col>
+                  <Typography.Text
+                    type={maxLengthIndicator >= 0 ? 'secondary' : 'danger'}
+                    style={{ fontWeight: 'normal' }}
+                  >
+                    {maxLengthIndicator}
+                  </Typography.Text>
+                </Col>
+              )}
+            </Row>
           </Col>
         );
       }}
